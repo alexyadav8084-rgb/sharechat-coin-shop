@@ -2,7 +2,7 @@ const coinsData = [
     {
         coins: 5000,
         bonus: 1500,
-        price: 400,
+        price: 1,
         oldPrice: 500
     },
     {
