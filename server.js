@@ -3,10 +3,14 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const path = require('path');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static('public')); // Put your index.html in a 'public' folder
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+  });
 
 // Route to handle payment submission
 app.post('/api/pay', (req, res) => {
