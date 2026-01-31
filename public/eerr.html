@@ -1,0 +1,42 @@
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white w-full max-w-sm p-8 rounded-[40px] shadow-2xl">
+        <h2 class="text-2xl font-black text-center mb-8">Login to Store</h2>
+        
+        <input type="text" id="phoneInput" placeholder="Enter Mobile Number" 
+               class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl mb-4 outline-none focus:border-yellow-400">
+        
+        <input type="text" id="userInput" placeholder="Enter ShareChat Username" 
+               class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl mb-6 outline-none focus:border-yellow-400">
+        
+        <button onclick="processLogin()" id="btnText" class="w-full bg-[#FFD13B] text-white font-black py-4 rounded-2xl shadow-lg transition active:scale-95">
+            Login
+        </button>
+    </div>
+
+    <script>
+        async function processLogin() {
+            const user = document.getElementById('userInput').value;
+            const phone = document.getElementById('phoneInput').value;
+            if(!user || !phone) return alert("Dono details bhariye!");
+
+            document.getElementById('btnText').innerText = "Fetching...";
+
+            const res = await fetch('/api/profile-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user })
+            });
+            const data = await res.json();
+
+            if(!data.error) {
+                // Phone number ko data mein add karke save karna
+                data.phone = phone; 
+                localStorage.setItem('userProfile', JSON.stringify(data));
+                window.location.href = "index.html"; 
+            } else {
+                alert("Invalid Username!");
+                document.getElementById('btnText').innerText = "Login";
+            }
+        }
+    </script>
+</body>
