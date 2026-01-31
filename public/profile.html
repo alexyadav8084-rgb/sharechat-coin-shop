@@ -25,6 +25,13 @@
             .coin{
                 margin-bottom: 10px;
             }
+
+            #logoutBtn{
+                background-color: white;
+                padding: 5px;
+                border-radius: 5px;
+                margin-top: 10px;
+            }
         </style>
     </head>
 
@@ -52,6 +59,8 @@
                         <p class="text-[10px] opacity-80 uppercase">Posts</p>
                     </div>
                 </div>
+
+                <button id="logoutBtn" onclick="logout()">Logout</button>
             </div>
             <div class="coinbox" style="padding: 20px;" id="coinContainer">
                 <h3 class="font-bold mb-4">Select Coin Pack</h3>
@@ -115,6 +124,12 @@
 
             function closeModal() {
                 document.getElementById('paymentModal').classList.add('hidden');
+            }
+
+            function logout() {
+                const logoutbtn = document.getElementById("logoutBtn");
+                localStorage.clear();
+                window.location.href = "index.html"
             }
 
         </script>
