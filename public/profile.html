@@ -18,6 +18,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
+            .app {
+                width: 100%;
+                max-width: 400px;
+            }
+
             .glass {
                 background: rgba(255, 255, 255, 0.25);
                 backdrop-filter: blur(8px);
@@ -32,7 +37,7 @@
                 align-items: center;
                 justify-content: center;
                 flex-direction: column;
-                width: 100vw;
+                width: 100%;
                 margin-top: 20px;
             }
 
@@ -51,7 +56,7 @@
                 display: flex;
                 box-shadow: #111 1px 1px 15px;
                 border-radius: 0px 0px 15px 15px;
-                width: 90vw;
+                width: 90%;
                 justify-content: space-between;
                 align-items: center;
                 padding: 5px;
@@ -94,7 +99,7 @@
     </head>
 
     <body class="bg-gray-100 flex justify-center">
-        <div class="w-full max-w-md bg-white min-h-screen">
+        <div class="w-full max-w-md bg-white min-h-screen app">
 
             <div class="bg-[#FFD13B] p-6 rounded-b-[40px] text-center shadow-lg">
                 <div class="flex justify-center">
