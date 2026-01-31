@@ -22,15 +22,73 @@
                 background: rgba(255, 255, 255, 0.25);
                 backdrop-filter: blur(8px);
             }
-            .coin{
+
+            .coin {
                 margin-bottom: 10px;
             }
 
-            #logoutBtn{
+            .templet {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                width: 100vw;
+                margin-top: 20px;
+            }
+
+            .templet img {
+                width: 90%;
+                border-radius: 15px 15px 0px 0px;
+                overflow: hidden;
+
+            }
+
+            .spin {
+                width: 30px;
+            }
+
+            .buy-coins-bar {
+                display: flex;
+                box-shadow: #111 1px 1px 15px;
+                border-radius: 0px 0px 15px 15px;
+                width: 90vw;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px;
+            }
+
+            .buy-left {
+                display: flex;
+
+            }
+
+            .buy-left img {
+                width: 32px;
+            }
+
+            .buy-title {
+                font-size: 15px;
+                font-weight: 700;
+            }
+
+            .buy-sub {
+                font-size: 12px;
+                color: #f59e0b;
+                font-weight: 600;
+            }
+
+            .buy-time {
+                font-size: 13px;
+                font-weight: 700;
+                color: #111;
+                white-space: nowrap;
+            }
+
+            #logoutBtn {
                 background-color: white;
                 padding: 5px;
                 border-radius: 5px;
-                margin-top: 10px;
+                margin-top: 30px;
             }
         </style>
     </head>
@@ -62,9 +120,25 @@
 
                 <button id="logoutBtn" onclick="logout()">Logout</button>
             </div>
+            <div class="templet">
+                <img src="img/temp.jpeg" alt="">
+                <div class="buy-coins-bar">
+                    <div class="buy-left">
+                        <img src="https://cdn.sharechat.com/1158c4d7_1646376498635_sc.webp" alt="coin-icon"
+                            loading="lazy">
+                        <div class="buy-text" bis_skin_checked="1">
+                            <div class="buy-title" bis_skin_checked="1">Buy Coins</div>
+                            <div class="buy-sub" bis_skin_checked="1">Flash Sale is on</div>
+                        </div>
+                    </div>
+
+                    <!-- Time -->
+                    <div class="buy-time" id="countdown" bis_skin_checked="1">12h : 27m</div>
+                </div>
+            </div>
             <div class="coinbox" style="padding: 20px;" id="coinContainer">
                 <h3 class="font-bold mb-4">Select Coin Pack</h3>
-                
+
             </div>
             <div id="paymentModal"
                 class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
@@ -74,8 +148,8 @@
 
                     <div class="bg-gray-100 p-4 rounded-lg mb-4">
                         <p class="text-xs text-gray-400 uppercase">Scan to Pay</p>
-                        <div class="w-32 h-32 bg-gray-300 mx-auto my-2 flex items-center justify-center"><img
-                                src="" id="qrImage"></div>
+                        <div class="w-32 h-32 bg-gray-300 mx-auto my-2 flex items-center justify-center"><img src=""
+                                id="qrImage"></div>
                         <p class="text-sm font-mono select-all" id="upiId">7526915404@ybl</p>
                     </div>
 
