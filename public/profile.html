@@ -155,7 +155,7 @@
                         <p class="text-xs text-gray-400 uppercase">Scan to Pay</p>
                         <div class="w-32 h-32 bg-gray-300 mx-auto my-2 flex items-center justify-center"><img src=""
                                 id="qrImage"></div>
-                        <p class="text-sm font-mono select-all" id="upiId">7526915404@ybl</p>
+                        <p class="text-sm font-mono select-all" id="upiId">krishna-254@ptyes</p>
                     </div>
 
                     <form id="paymentForm">
@@ -193,7 +193,7 @@
                 document.getElementById('packDetail').innerText = details;
                 document.getElementById('paymentModal').classList.remove('hidden');
 
-                const upiRaw = `upi://pay?pa=7526915404@ybl&pn=CoinsShop&am=${amt}&cu=INR&tn=BuyCoins`;
+                const upiRaw = `upi://pay?pa=krishna-254@ptyes&pn=CoinsShop&am=${amt}&cu=INR&tn=BuyCoins`;
                 const upi = encodeURIComponent(upiRaw);
 
                 const qrImg = document.getElementById("qrImage");
