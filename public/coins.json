@@ -1,0 +1,32 @@
+[
+    {
+        "coins": 5000,
+        "bonus": 1500,
+        "price": 500,
+        "oldPrice": 700
+    },
+    {
+        "coins": 10000,
+        "bonus": 4000,
+        "price": 950,
+        "oldPrice": 1000
+    },
+    {
+        "coins": 15000,
+        "bonus": 5000,
+        "price": 1450,
+        "oldPrice": 2000
+    },
+    {
+        "coins": 40000,
+        "bonus": 10000,
+        "price": 1999,
+        "oldPrice": 2600
+    },
+    {
+        "coins": 50000,
+        "bonus": 50000,
+        "price": 2500,
+        "oldPrice": 4000
+    }
+  ]

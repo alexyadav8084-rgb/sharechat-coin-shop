@@ -2,6 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 
@@ -9,14 +10,75 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// serve static files from public folder
 app.use(express.static(path.join(__dirname, "public")));
+
+// ===== COINS DATA FILE =====
+const coinsFile = path.join(__dirname, "coins.json");
+
+// create file if not exist
+if (!fs.existsSync(coinsFile)) {
+  fs.writeFileSync(coinsFile, JSON.stringify([], null, 2));
+}
+
+function readCoins() {
+  return JSON.parse(fs.readFileSync(coinsFile));
+}
+
+function saveCoins(data) {
+  fs.writeFileSync(coinsFile, JSON.stringify(data, null, 2));
+}
 
 // ===== Routes =====
 
 // Home page
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// ===== COINS API =====
+
+// get all coins
+app.get("/api/coins", (req, res) => {
+  res.json(readCoins());
+});
+
+// add coin pack
+app.post("/api/coins/add", (req, res) => {
+  const { coins, bonus, price, oldPrice } = req.body;
+
+  if (!coins || !price) {
+    return res.status(400).json({ error: "Coins and price required" });
+  }
+
+  const data = readCoins();
+
+  data.push({
+    coins,
+    bonus,
+    price,
+    oldPrice,
+  });
+
+  saveCoins(data);
+
+  res.json({ message: "Coin pack added" });
+});
+
+// delete coin pack
+app.post("/api/coins/delete", (req, res) => {
+  const { index } = req.body;
+
+  const data = readCoins();
+
+  if (index === undefined || !data[index]) {
+    return res.status(400).json({ error: "Invalid index" });
+  }
+
+  data.splice(index, 1);
+
+  saveCoins(data);
+
+  res.json({ message: "Coin pack deleted" });
 });
 
 // ===== Payment API =====
@@ -56,7 +118,6 @@ app.post("/api/profile-data", async (req, res) => {
     const $ = cheerio.load(response.data);
     const stats = [];
 
-    // followers / following / posts
     $('.Fz\\(\\$fzbutton\\).Lh\\(\\$lhbutton\\).Fw\\(\\$fwbutton\\)').each(
       (i, el) => {
         stats.push($(el).text().trim());
@@ -65,6 +126,7 @@ app.post("/api/profile-data", async (req, res) => {
 
     const nameSelector =
       ".Whs\\(nw\\).Ovx\\(h\\).Tov\\(e\\).Maw\\(100\\%\\).Fz\\(\\$fzbutton\\).Fw\\(\\$fwbutton\\)";
+
     const imgSelector =
       "img.Pos\\(a\\).W\\(\\$8xl\\).H\\(\\$8xl\\).Bdrs\\(50\\%\\)";
 
@@ -90,6 +152,7 @@ module.exports = app;
 // ===== LOCAL DEV ONLY =====
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
+
   app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
   });
