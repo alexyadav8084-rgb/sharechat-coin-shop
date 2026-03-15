@@ -28,11 +28,5 @@
     "bonus": 50000,
     "price": 2500,
     "oldPrice": 4000
-  },
-  {
-    "coins": 1,
-    "bonus": 22,
-    "price": 555,
-    "oldPrice": 888
   }
 ]

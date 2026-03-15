@@ -15,13 +15,23 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // Define coins content path
-const coinsFilePath = path.join(__dirname, "coins.json");
+// In Vercel (serverless), the root filesystem is read-only, but /tmp is writable
+const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production';
+const defaultCoinsPath = path.join(__dirname, "coins.json");
+const tmpCoinsPath = isVercel ? "/tmp/coins.json" : defaultCoinsPath;
 
 // Helper function to read coins
 const readCoins = () => {
   try {
-    const data = fs.readFileSync(coinsFilePath, 'utf8');
-    return JSON.parse(data);
+    // Try to read from tmp first (if modified), then fallback to default
+    if (fs.existsSync(tmpCoinsPath)) {
+      const data = fs.readFileSync(tmpCoinsPath, 'utf8');
+      return JSON.parse(data);
+    } else if (fs.existsSync(defaultCoinsPath)) {
+      const data = fs.readFileSync(defaultCoinsPath, 'utf8');
+      return JSON.parse(data);
+    }
+    return [];
   } catch (error) {
     console.error("Error reading coins.json:", error);
     return [];
@@ -31,7 +41,7 @@ const readCoins = () => {
 // Helper function to write coins
 const writeCoins = (data) => {
   try {
-    fs.writeFileSync(coinsFilePath, JSON.stringify(data, null, 2), 'utf8');
+    fs.writeFileSync(tmpCoinsPath, JSON.stringify(data, null, 2), 'utf8');
     return true;
   } catch (error) {
     console.error("Error writing coins.json:", error);
