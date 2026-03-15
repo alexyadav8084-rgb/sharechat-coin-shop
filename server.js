@@ -3,6 +3,8 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const path = require("path");
 
+const fs = require("fs");
+
 const app = express();
 
 // ===== Middleware =====
@@ -12,11 +14,86 @@ app.use(express.urlencoded({ extended: true }));
 // serve static files from public folder
 app.use(express.static(path.join(__dirname, "public")));
 
+// Define coins content path
+const coinsFilePath = path.join(__dirname, "coins.json");
+
+// Helper function to read coins
+const readCoins = () => {
+  try {
+    const data = fs.readFileSync(coinsFilePath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error reading coins.json:", error);
+    return [];
+  }
+};
+
+// Helper function to write coins
+const writeCoins = (data) => {
+  try {
+    fs.writeFileSync(coinsFilePath, JSON.stringify(data, null, 2), 'utf8');
+    return true;
+  } catch (error) {
+    console.error("Error writing coins.json:", error);
+    return false;
+  }
+};
+
 // ===== Routes =====
 
 // Home page
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// ===== Coins API =====
+app.get("/coins", (req, res) => {
+  const coins = readCoins();
+  res.json(coins);
+});
+
+app.post("/add", (req, res) => {
+  const { coins, bonus, price, oldPrice } = req.body;
+  if (!coins || !price) {
+    return res.status(400).json({ error: "Coins and price are required" });
+  }
+
+  const currentCoins = readCoins();
+  const newCoin = {
+    coins: parseInt(coins) || 0,
+    bonus: parseInt(bonus) || 0,
+    price: parseInt(price) || 0,
+    oldPrice: parseInt(oldPrice) || 0
+  };
+
+  currentCoins.push(newCoin);
+  
+  if (writeCoins(currentCoins)) {
+    res.json({ message: "Coin added successfully", data: newCoin });
+  } else {
+    res.status(500).json({ error: "Failed to save coin" });
+  }
+});
+
+app.post("/delete", (req, res) => {
+  const { index } = req.body;
+  if (index === undefined || index < 0) {
+    return res.status(400).json({ error: "Valid index is required" });
+  }
+
+  const currentCoins = readCoins();
+  
+  if (index >= currentCoins.length) {
+    return res.status(404).json({ error: "Coin not found" });
+  }
+
+  currentCoins.splice(index, 1);
+  
+  if (writeCoins(currentCoins)) {
+    res.json({ message: "Coin deleted successfully" });
+  } else {
+    res.status(500).json({ error: "Failed to delete coin" });
+  }
 });
 
 // ===== Payment API =====

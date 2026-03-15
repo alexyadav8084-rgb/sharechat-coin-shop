@@ -1,82 +1,479 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Coin Admin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --primary-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --primary-glow: rgba(139, 92, 246, 0.5);
+            --danger-color: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --input-bg: rgba(15, 23, 42, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 1rem;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .section-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section-card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 0.75rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Form Styles */
+        .add-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .input-group input {
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            align-self: flex-end;
+            margin-top: 1.4rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* List Styles */
+        .coin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .coin-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .coin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        .coin-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .coin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .coin-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .coin-amount .icon {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.6));
+        }
+
+        .coin-bonus {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .coin-pricing {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-new {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .price-old {
+            font-size: 1rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+        
+        .currency {
+            font-size: 1.2rem;
+            margin-right: 2px;
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Loading overlay for list interactions */
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 16px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #8b5cf6;
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+    </style>
 </head>
 <body>
 
-<h2>Add Coin Pack</h2>
+    <div class="dashboard-container">
+        
+        <div class="header">
+            <h1>Coin Admin Dashboard</h1>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;">Manage your coin packs and pricing</p>
+        </div>
 
-<input id="coins" placeholder="coins">
-<input id="bonus" placeholder="bonus">
-<input id="price" placeholder="price">
-<input id="oldPrice" placeholder="oldPrice">
+        <div class="section-card">
+            <div class="section-header">
+                <h2>✨ Create New Pack</h2>
+            </div>
+            
+            <div class="add-form">
+                <div class="input-group">
+                    <label for="coins">Coin Amount</label>
+                    <input type="number" id="coins" placeholder="e.g. 1000">
+                </div>
+                <div class="input-group">
+                    <label for="bonus">Bonus Coins</label>
+                    <input type="number" id="bonus" placeholder="e.g. 200">
+                </div>
+                <div class="input-group">
+                    <label for="price">Current Price (₹)</label>
+                    <input type="number" id="price" placeholder="e.g. 99">
+                </div>
+                <div class="input-group">
+                    <label for="oldPrice">Old Price (₹)</label>
+                    <input type="number" id="oldPrice" placeholder="e.g. 149">
+                </div>
+                <button class="btn" onclick="add()" id="addBtn">
+                    <span>Add Pack</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+            </div>
+        </div>
 
-<button onclick="add()">Add</button>
+        <div class="section-card">
+            <div class="section-header">
+                <h2>📦 Available Packs</h2>
+            </div>
+            
+            <div id="list" class="coin-grid">
+                <!-- Coin cards will be generated here -->
+                <div class="empty-state">Loading packs...</div>
+            </div>
+        </div>
 
-<h2>Coin List</h2>
+    </div>
 
-<div id="list"></div>
+    <script>
+        async function load() {
+            try {
+                let res = await fetch("/coins");
+                let data = await res.json();
+                
+                let container = document.getElementById("list");
+                
+                if (!data || data.length === 0) {
+                    container.innerHTML = `<div class="empty-state">No coin packs available. Add one above!</div>`;
+                    return;
+                }
 
-<script>
+                let html = "";
+                data.forEach((item, i) => {
+                    const bonusVal = item.bonus || 0;
+                    const oldPriceHtml = item.oldPrice ? `<span class="price-old"><span class="currency">₹</span>${item.oldPrice}</span>` : '';
+                    const bonusHtml = bonusVal > 0 ? `<div class="coin-bonus">+${bonusVal} Bonus</div>` : '';
+                    
+                    html += `
+                        <div class="coin-card" id="card-${i}">
+                            <div class="loading-overlay" id="loading-${i}">
+                                <div class="spinner"></div>
+                            </div>
+                            <div class="coin-header">
+                                <div class="coin-amount">
+                                    <span class="icon">🪙</span>
+                                    ${item.coins}
+                                </div>
+                                ${bonusHtml}
+                            </div>
+                            <div class="coin-pricing">
+                                <span class="price-new"><span class="currency">₹</span>${item.price}</span>
+                                ${oldPriceHtml}
+                            </div>
+                            <button class="btn-delete" onclick="del(${i})" title="Delete Pack">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                Delete
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            } catch (err) {
+                console.error("Failed to load coins:", err);
+                document.getElementById("list").innerHTML = `<div class="empty-state" style="color: var(--danger-color)">Failed to load packs. Please refresh.</div>`;
+            }
+        }
 
-async function load(){
+        async function add() {
+            const coinsVal = document.getElementById("coins").value;
+            const priceVal = document.getElementById("price").value;
+            
+            if(!coinsVal || !priceVal) {
+                alert("Coin Amount and Current Price are required!");
+                return;
+            }
 
-let res = await fetch("/coins");
-let data = await res.json();
+            const btn = document.getElementById("addBtn");
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<div class="spinner" style="width:20px;height:20px;"></div>`;
+            btn.disabled = true;
 
-let html="";
+            let data = {
+                coins: coinsVal,
+                bonus: document.getElementById("bonus").value || 0,
+                price: priceVal,
+                oldPrice: document.getElementById("oldPrice").value || ""
+            };
 
-data.forEach((item,i)=>{
+            try {
+                await fetch("/add", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(data)
+                });
+                
+                document.getElementById("coins").value = "";
+                document.getElementById("bonus").value = "";
+                document.getElementById("price").value = "";
+                document.getElementById("oldPrice").value = "";
+                
+                await load();
+            } catch (err) {
+                console.error("Failed to add pack:", err);
+                alert("Failed to add pack. See console.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
 
-html+=`
-<div>
-${item.coins} + ${item.bonus} Bonus
-₹${item.price}
-<button onclick="del(${i})">Delete</button>
-</div>
-`;
+        async function del(i) {
+            const overlay = document.getElementById(`loading-${i}`);
+            if(overlay) overlay.classList.add('active');
 
-});
+            try {
+                await fetch("/delete", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({index: i})
+                });
+                
+                await load();
+            } catch (err) {
+                console.error("Failed to delete pack:", err);
+                alert("Failed to delete pack. See console.");
+                if(overlay) overlay.classList.remove('active');
+            }
+        }
 
-document.getElementById("list").innerHTML=html;
-
-}
-
-async function add(){
-
-let data={
-coins:coins.value,
-bonus:bonus.value,
-price:price.value,
-oldPrice:oldPrice.value
-};
-
-await fetch("/add",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify(data)
-});
-
-load();
-
-}
-
-async function del(i){
-
-await fetch("/delete",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({index:i})
-});
-
-load();
-
-}
-
-load();
-
-</script>
-
+        load();
+    </script>
 </body>
 </html>
